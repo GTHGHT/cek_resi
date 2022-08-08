@@ -1,5 +1,5 @@
-import 'ui/pages/details_page.dart';
-import 'ui/pages/home_page.dart';
+import 'ui/screens/details_screen.dart';
+import 'ui/screens/home_screen.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 
@@ -90,7 +90,7 @@ class MyApp extends StatelessWidget {
               ),
             ),
             inputDecorationTheme: InputDecorationTheme(
-              contentPadding: EdgeInsets.symmetric(horizontal: 8),
+              contentPadding: EdgeInsets.symmetric(horizontal: 16),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
