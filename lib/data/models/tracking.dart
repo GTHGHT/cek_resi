@@ -10,8 +10,8 @@ class TrackingModel {
   DateTime? lastUpdated;
   List<TrackingHistory>? histories;
 
-  TrackingModel(
-    this.isValid,
+  TrackingModel({
+    required this.isValid,
     this.number,
     this.couriers,
     this.status,
@@ -21,7 +21,7 @@ class TrackingModel {
     this.lastPosition,
     this.lastUpdated,
     this.histories,
-  );
+  });
 
   static DateTime? toDateTime(String string) {
     return string.isEmpty ? null : DateTime.parse(string);
@@ -29,16 +29,16 @@ class TrackingModel {
 
   factory TrackingModel.fromMap(Map<String, dynamic> data) {
     return TrackingModel(
-      data['found'],
-      data['detail']['code'],
-      data['kurir'][0],
-      data['status'],
-      toDateTime(data['date_shipment']),
-      toDateTime(data['date_received']),
-      data['receiver'] ?? data['consignee']['name'],
-      data['current_position'],
-      toDateTime(data['history'][0]['time']),
-      List<TrackingHistory>.from(
+      isValid: data['found'],
+      number:data['detail']['code'],
+      couriers:data['kurir'][0],
+      status:data['status'],
+      dateShipment:toDateTime(data['date_shipment']),
+      dateReceived:toDateTime(data['date_received']),
+      recipient:data['receiver'] ?? data['consignee']['name'],
+      lastPosition:data['current_position'],
+      lastUpdated:toDateTime(data['history'][0]['time']),
+      histories:List<TrackingHistory>.from(
         (data['history'] as List<Map<String, dynamic>>).map(
           (value) => TrackingHistory.fromMap(value),
         ),
@@ -48,7 +48,33 @@ class TrackingModel {
 
   factory TrackingModel.initial() {
     return TrackingModel(
-        false, null, null, null, null, null, null, null, null, null);
+        isValid: false,);
+  }
+
+  TrackingModel copyWith({
+    bool? isValid,
+    String? number,
+    String? couriers,
+    String? status,
+    DateTime? dateShipment,
+    DateTime? dateReceived,
+    String? recipient,
+    String? lastPosition,
+    DateTime? lastUpdated,
+    List<TrackingHistory>? histories,
+  }) {
+    return TrackingModel(
+      isValid: isValid ?? this.isValid,
+      number: number ?? this.number,
+      couriers: couriers ?? this.couriers,
+      status: status ?? this.status,
+      dateShipment: dateShipment ?? this.dateShipment,
+      dateReceived: dateReceived ?? this.dateReceived,
+      recipient: recipient ?? this.recipient,
+      lastPosition: lastPosition ?? this.lastPosition,
+      lastUpdated: lastUpdated ?? this.lastUpdated,
+      histories: histories ?? this.histories,
+    );
   }
 }
 

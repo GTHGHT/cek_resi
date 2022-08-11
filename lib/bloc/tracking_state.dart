@@ -1,6 +1,13 @@
 part of 'tracking_bloc.dart';
 
-@immutable
-abstract class TrackingState {}
+enum TrackingStatus { initial, success, failure }
 
-class TrackingInitial extends TrackingState {}
+class TrackingState {
+  final TrackingStatus status;
+  final List<TrackingModel> data;
+
+  TrackingState({
+    this.status = TrackingStatus.initial,
+    this.data = const [],
+  });
+}
