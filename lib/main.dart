@@ -1,3 +1,6 @@
+import 'package:cek_resi/bloc/tracking_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'ui/screens/details_screen.dart';
 import 'ui/screens/home_screen.dart';
 import 'package:dynamic_color/dynamic_color.dart';
@@ -70,40 +73,43 @@ class MyApp extends StatelessWidget {
               seedColor: Color(0xff009fba),
               brightness: Brightness.dark,
             );
-        return MaterialApp(
-          title: 'Flutter Demo',
-          theme: ThemeData(
-            colorScheme: lightColorScheme,
-            textTheme: textTheme.apply(
-              displayColor: lightColorScheme.primary,
-              bodyColor: lightColorScheme.onPrimaryContainer,
-            ),
-            useMaterial3: true,
-            elevatedButtonTheme: ElevatedButtonThemeData(
-              style: ButtonStyle(
-                // elevation: MaterialStateProperty.all<double>(3),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
+        return BlocProvider(
+          create: (_)=>TrackingBloc(),
+          child: MaterialApp(
+            title: 'Flutter Demo',
+            theme: ThemeData(
+              colorScheme: lightColorScheme,
+              textTheme: textTheme.apply(
+                displayColor: lightColorScheme.primary,
+                bodyColor: lightColorScheme.onPrimaryContainer,
+              ),
+              useMaterial3: true,
+              elevatedButtonTheme: ElevatedButtonThemeData(
+                style: ButtonStyle(
+                  // elevation: MaterialStateProperty.all<double>(3),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
                   ),
                 ),
               ),
-            ),
-            inputDecorationTheme: InputDecorationTheme(
-              contentPadding: EdgeInsets.symmetric(horizontal: 16),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
+              inputDecorationTheme: InputDecorationTheme(
+                contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
               ),
             ),
+            darkTheme: ThemeData(
+              colorScheme: darkColorScheme,
+            ),
+            routes: {
+              '/': (ctx) => HomePage(),
+              '/details': (ctx) => DetailsPage(),
+            },
+            initialRoute: '/',
           ),
-          darkTheme: ThemeData(
-            colorScheme: darkColorScheme,
-          ),
-          routes: {
-            '/': (ctx) => HomePage(),
-            '/details': (ctx) => DetailsPage(),
-          },
-          initialRoute: '/',
         );
       },
     );

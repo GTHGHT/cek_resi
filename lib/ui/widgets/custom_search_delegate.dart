@@ -29,7 +29,7 @@ class CustomSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    return Column(
+    return ListView(
         children: items
             .where((element) => element.contains(query))
             .map((e) => ListTile(
@@ -41,7 +41,7 @@ class CustomSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return Column(
+    return ListView(
         children: items
             .map((e) => ListTile(
           title: Text(e),

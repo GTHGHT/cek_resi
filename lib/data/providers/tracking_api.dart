@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/widgets.dart';
+
 class TrackingApi{
   final HttpClient _client = HttpClient();
 
@@ -18,6 +20,7 @@ class TrackingApi{
     if (response.statusCode >= 300) {
       throw HttpException("Making Post Request Failed!", uri: uri);
     }
+    debugPrint(response.statusCode.toString());
 
     String raw = '';
     await response

@@ -1,4 +1,4 @@
-const courier = {
+const kCourier = {
   'anteraja': 'AnterAja',
   'ide': 'ID Express',
   'jne': 'JNE',
@@ -10,7 +10,7 @@ const courier = {
   'trawlbens': 'Trawlbens',
   'wahana': 'Wahana'
 };
-const inverseCourier = {
+const kInverseCourier = {
   'AnterAja': 'anteraja',
   'ID Express': 'ide',
   'JNE': 'jne',

@@ -1,7 +1,10 @@
+import 'package:cek_resi/bloc/tracking_bloc.dart';
 import 'package:cek_resi/data/models/tracking.dart';
 import 'package:cek_resi/ui/widgets/custom_search_delegate.dart';
+import 'package:cek_resi/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_remix/flutter_remix.dart';
 
 import '../widgets/tracking_tile.dart';
@@ -20,91 +23,7 @@ class HomePage extends StatelessWidget {
         ),
       ),
       builder: (BuildContext ctx) {
-        return Padding(
-          padding: const EdgeInsets.all(16.0).copyWith(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                shape: RoundedRectangleBorder(
-                  side: BorderSide(
-                    color: Theme.of(context).colorScheme.primary,
-                    width: 2,
-                  ),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                dense: true,
-                contentPadding: EdgeInsets.only(left: 16,),
-                title: Text("J&T"),
-                trailing: IconButton(
-                  icon: Icon(FlutterRemix.arrow_right_s_line),
-                  onPressed: () {
-                    showSearch(
-                      context: context,
-                      delegate: CustomSearchDelegate([
-                        "Test 1",
-                        "Test 2",
-                        "Test 3",
-                        "Test 4",
-                        "Test 5",
-                        "Test 6",
-                      ]),
-                    );
-                  },
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              TextField(
-                style: Theme.of(context).textTheme.bodyMedium,
-                maxLines: 1,
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(
-                    RegExp('[a-zA-Z0-9- .]'),
-                  )
-                ],
-                decoration: InputDecoration(
-                  label: Text("Nomor Resi"),
-                ),
-                maxLength: 64,
-                autofocus: true,
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              ButtonBar(
-                alignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.4,
-                    child: ElevatedButton.icon(
-                      icon: Icon(FlutterRemix.add_fill),
-                      onPressed: () {},
-                      label: Text("Tambah Resi"),
-                    ),
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.01,
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.4,
-                    child: ElevatedButton.icon(
-                      icon: Icon(FlutterRemix.arrow_left_s_line),
-                      onPressed: () => Navigator.pop(ctx),
-                      label: Text("Kembali"),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 16,
-              ),
-            ],
-          ),
-        );
+        return SearchBottomSheet();
       },
     );
   }
@@ -272,11 +191,134 @@ class HomePage extends StatelessWidget {
                 recipient: 'Gilang Raditya',
                 lastPosition: 'Samarinda',
               ),
-              onDetails: () {},
+              onDetails: () {
+                Navigator.pushNamed(context, '/details', arguments: 1);
+              },
               onDelete: () {},
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class SearchBottomSheet extends StatefulWidget {
+  const SearchBottomSheet({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<SearchBottomSheet> createState() => _SearchBottomSheetState();
+}
+
+class _SearchBottomSheetState extends State<SearchBottomSheet> {
+  late TextEditingController _controller;
+  String courier = kCourier.values.first;
+
+  @override
+  void initState() {
+    _controller = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0).copyWith(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            shape: RoundedRectangleBorder(
+              side: BorderSide(
+                color: Theme.of(context).colorScheme.primary,
+                width: 2,
+              ),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            dense: true,
+            contentPadding: EdgeInsets.only(
+              left: 16,
+            ),
+            title: Text(courier),
+            trailing: IconButton(
+              icon: Icon(FlutterRemix.arrow_right_s_line),
+              onPressed: () async {
+                FocusManager.instance.primaryFocus?.unfocus();
+                final selectedCourier = await showSearch(
+                  context: context,
+                  delegate: CustomSearchDelegate(kCourier.values.toList()),
+                );
+                if (selectedCourier != null || selectedCourier != courier) {
+                  setState(() {
+                    courier = selectedCourier;
+                  });
+                }
+              },
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          TextField(
+            controller: _controller,
+            style: Theme.of(context).textTheme.bodyMedium,
+            maxLines: 1,
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(
+                RegExp('[a-zA-Z0-9- .]'),
+              )
+            ],
+            decoration: InputDecoration(
+              label: Text("Nomor Resi"),
+            ),
+            maxLength: 64,
+            autofocus: true,
+          ),
+          SizedBox(
+            height: 8,
+          ),
+          ButtonBar(
+            alignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.4,
+                child: ElevatedButton.icon(
+                  icon: Icon(FlutterRemix.add_fill),
+                  onPressed: () {
+                    context.read<TrackingBloc>().add(
+                        AddTracking(resi: _controller.text, courier: courier));
+                    Navigator.pop(context);
+                  },
+                  label: Text("Tambah Resi"),
+                ),
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.01,
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.4,
+                child: ElevatedButton.icon(
+                  icon: Icon(FlutterRemix.arrow_left_s_line),
+                  onPressed: () => Navigator.pop(context),
+                  label: Text("Kembali"),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 16,
+          ),
+        ],
       ),
     );
   }
